@@ -1,4 +1,5 @@
 ﻿using ContactsAppAPI.Authentication;
+using ContactsAppAPI.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,5 +15,6 @@ namespace ContactsAppAPI.Data
         {
             base.OnModelCreating(builder);
         }
+        public DbSet<Contact> Contacts { get; set; }
     }
 }
