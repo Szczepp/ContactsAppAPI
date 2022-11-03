@@ -1,5 +1,8 @@
-using ContactsAppAPI.Authentication;
+using ContactsAppAPI.Models;
 using ContactsAppAPI.Data;
+using ContactsAppAPI.Interfaces;
+using ContactsAppAPI.Services;
+using ContactsAppAPI.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -18,6 +21,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ContactsAppAPI.Repositories.Interfaces;
+using ContactsAppAPI.Services.Interfaces;
 
 
 
@@ -25,6 +30,8 @@ namespace ContactsAppAPI
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -63,6 +70,19 @@ namespace ContactsAppAPI
                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                      };
                  });
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IContactRepository, ContactRepository>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                 builder =>
+                                 {
+                                     builder.WithOrigins("https://localhost:44351", "http://localhost:4200")
+                                                         .AllowAnyHeader()
+                                                         .AllowAnyMethod();
+                                 });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,6 +98,7 @@ namespace ContactsAppAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+                    app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
             app.UseAuthorization();
