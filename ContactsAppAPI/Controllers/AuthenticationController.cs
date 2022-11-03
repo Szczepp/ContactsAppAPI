@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ContactsAppAPI.Authentication.Models;
+using ContactsAppAPI.Models;
 
 namespace ContactsAppAPI.Controllers
 {
@@ -27,10 +28,12 @@ namespace ContactsAppAPI.Controllers
             _configuration = configuration;
         }
         [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var checkPswrd = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (user != null && checkPswrd)
             {
                 var authClaims = new List<Claim>
                 {
@@ -60,7 +63,7 @@ namespace ContactsAppAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var userExists = await _userManager.FindByEmailAsync(model.Email);
-            if (userExists == null)
+            if (userExists != null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" }); 
             }
@@ -70,7 +73,7 @@ namespace ContactsAppAPI.Controllers
                 UserName = model.Username,
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
-            var result = await _userManager.CreateAsync(user);
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });

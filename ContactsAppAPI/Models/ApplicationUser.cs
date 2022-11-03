@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ContactsAppAPI.Authentication
+namespace ContactsAppAPI.Models
 {
     public class ApplicationUser : IdentityUser
     {
