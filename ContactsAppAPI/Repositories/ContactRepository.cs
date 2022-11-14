@@ -1,48 +1,52 @@
 ﻿using ContactsAppAPI.Data;
-using ContactsAppAPI.Interfaces;
 using ContactsAppAPI.Models;
 using System.Collections.Generic;
 using System.Linq;
 using ContactsAppAPI.Repositories.Interfaces;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System;
+using ContactsAppAPI.Abstracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContactsAppAPI.Repositories
 {
-    public class ContactRepository : IContactRepository
+    public class ContactRepository : RepositoryBase<Contact>, IContactRepository
     {
-        private readonly ApplicationDbContext _db;
-
-        public ContactRepository(ApplicationDbContext db)
+        public ContactRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
-            _db = db;
         }
 
-        public void AddContact(Contact contact)
+        public async Task<Contact> GetContactByIdAsync(long id)
         {
-            _db.Contacts.Add(contact);
-            _db.SaveChanges();
+            return await GetByCondition(c => c.Id == id).FirstOrDefaultAsync();
         }
 
-        public Contact GetContact(long contactId)
+        public async Task<Contact> GetContactWithDetailsByIdAsync(long id)
         {
-            return _db.Contacts.Find(contactId);
+            return await GetByCondition(c => c.Id == id)
+                .Include(c => c.Category) //yet to be implemented
+                .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<Contact>> GetAllContactsAsync()
+        {
+            return await GetAll()
+                .OrderBy(c => c.Id)
+                .ToListAsync();
+        }
+        public void CreateContact(Contact contact)
+        {
+            Create(contact);
         }
 
-        public List<Contact> GetContacts()
+        public void DeleteContact(Contact contact)
         {
-            return _db.Contacts.ToList();
-        }
-
-        public void RemoveContact(long contactId)
-        {
-            var contact = GetContact(contactId);
-            _db.Contacts.Remove(contact);
-            _db.SaveChanges();
+            Delete(contact);
         }
 
         public void UpdateContact(Contact contact)
         {
-            _db.Contacts.Update(contact);
-            _db.SaveChanges();
+            Update(contact);
         }
     }
 }

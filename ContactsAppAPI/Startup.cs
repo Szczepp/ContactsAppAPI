@@ -1,6 +1,6 @@
 using ContactsAppAPI.Models;
 using ContactsAppAPI.Data;
-using ContactsAppAPI.Interfaces;
+using ContactsAppAPI.Abstracts;
 using ContactsAppAPI.Services;
 using ContactsAppAPI.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -23,8 +23,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ContactsAppAPI.Repositories.Interfaces;
 using ContactsAppAPI.Services.Interfaces;
-
-
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ContactsAppAPI
 {
@@ -70,9 +69,9 @@ namespace ContactsAppAPI
                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                      };
                  });
-            services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IContactRepository, ContactRepository>();
-
+            services.AddScoped<IContactService, ContactService>();
+            
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
