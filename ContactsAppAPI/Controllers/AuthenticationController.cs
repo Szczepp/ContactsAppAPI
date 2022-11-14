@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ContactsAppAPI.Authentication.Models;
 using ContactsAppAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContactsAppAPI.Controllers
 {
@@ -51,11 +52,13 @@ namespace ContactsAppAPI.Controllers
                     );
                 return Ok(new
                 {
+                    username = user.UserName,
+                    email = user.Email,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            return Unauthorized("Invalid credentials");
         }
 
         [HttpPost]
@@ -80,5 +83,13 @@ namespace ContactsAppAPI.Controllers
             }
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
+
+/*        [Authorize]
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            //here
+        }*/
     }
 }

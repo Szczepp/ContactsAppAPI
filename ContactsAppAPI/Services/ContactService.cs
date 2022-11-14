@@ -2,9 +2,13 @@
 
 using ContactsAppAPI.Repositories.Interfaces;
 using ContactsAppAPI.Services.Interfaces;
-using ContactsAppAPI.Interfaces;
+using ContactsAppAPI.Abstracts;
 using ContactsAppAPI.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Linq.Expressions;
+using System;
 
 namespace ContactsAppAPI.Services
 {
@@ -18,29 +22,40 @@ namespace ContactsAppAPI.Services
             _contactRepo = contactRepo;
         }
 
-        public void AddContact(Contact contact)
+        public void Create(Contact entity)
         {
-            _contactRepo.AddContact(contact);
+            _contactRepo.CreateContact(entity);
         }
 
-        public Contact GetContact(long contactId)
+        public async void Delete(long entityId)
         {
-            return _contactRepo.GetContact(contactId);
+            var contact = await this.GetByIdAsync(entityId);
+            _contactRepo.Delete(contact);
         }
 
-        public List<Contact> GetContacts()
+        public async Task<List<Contact>> GetAllAsync()
         {
-            return _contactRepo.GetContacts();
+            var contacts = await _contactRepo.GetAllContactsAsync();
+            return contacts.ToList();
         }
 
-        public void RemoveContact(long contactId)
+        public IEnumerable<Contact> GetByCondition(Expression<Func<Contact, bool>> expression)
         {
-            _contactRepo.RemoveContact(contactId);
+            var contacts =  _contactRepo.GetByCondition(expression).ToList();
+            return contacts;
         }
 
-        public void UpdateContact(Contact contact)
+        public async Task<Contact> GetByIdAsync(long entityId)
         {
-            _contactRepo.UpdateContact(contact);
+            var contact = await _contactRepo.GetContactByIdAsync(entityId);
+            return contact;
         }
+
+        public void Update(Contact entity)
+        {
+            _contactRepo.UpdateContact(entity);
+        }
+
+       
     }
 }

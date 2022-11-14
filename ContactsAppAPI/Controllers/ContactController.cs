@@ -1,10 +1,10 @@
-﻿using ContactsAppAPI.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ContactsAppAPI.Models;
 using ContactsAppAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContactsAppAPI.Controllers
 {
@@ -21,41 +21,47 @@ namespace ContactsAppAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public List<Contact> Get()
+        public async Task<List<Contact>> Get()
         {
-            var result =  _contactService.GetContacts();
+            var result = await _contactService.GetAllAsync();
             return result;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{contactId}")]
-        public Contact Get(long contactId)
+        public async Task<Contact> Get(long contactId)
         {
-            return _contactService.GetContact(contactId);
+            var contact = await _contactService.GetByIdAsync(contactId);
+            return contact;
         }
+
+        [Authorize]
         [HttpPost]
         [Route("add")]
         public IActionResult AddContact([FromBody] Contact contact)
         {
-            _contactService.AddContact(contact);
+            _contactService.Create(contact);
 
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("remove/{contactId}")]
         public IActionResult RemoveContact(long contactId)
         {
-            _contactService.RemoveContact(contactId);
+            _contactService.Delete(contactId);
 
             return Ok();
         }
 
+        [Authorize]
         [HttpPut]
         [Route("update")]
         public IActionResult UpdateContact([FromBody] Contact contact)
         {
-            _contactService.UpdateContact(contact);
+            _contactService.Update(contact);
 
             return Ok();
         }

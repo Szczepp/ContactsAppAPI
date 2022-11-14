@@ -1,8 +1,11 @@
-﻿using ContactsAppAPI.Interfaces;
+﻿using ContactsAppAPI.Abstracts;
+using ContactsAppAPI.Models;
+using ContactsAppAPI.Repositories.Interfaces;
 
 namespace ContactsAppAPI.Services.Interfaces
 {
-    public interface IContactService : IContact
+    public interface IContactService : IServiceBase<Contact>
     {
+
     }
 }
