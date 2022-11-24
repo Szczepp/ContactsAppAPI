@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using ContactsAppAPI.Models;
 using ContactsAppAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using System;
+using System.Net;
 
 namespace ContactsAppAPI.Controllers
 {
@@ -24,10 +27,10 @@ namespace ContactsAppAPI.Controllers
         public async Task<List<Contact>> Get()
         {
             var result = await _contactService.GetAllAsync();
-            return result;
+            return result.ToList();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("{contactId}")]
         public async Task<Contact> Get(long contactId)
@@ -36,12 +39,21 @@ namespace ContactsAppAPI.Controllers
             return contact;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         [Route("add")]
         public IActionResult AddContact([FromBody] Contact contact)
         {
-            _contactService.Create(contact);
+            try {
+                if (contact == null)
+                    return BadRequest();
+                
+                _contactService.Create(contact);
+
+            } catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new contact");
+            }
 
             return Ok();
         }
@@ -61,7 +73,18 @@ namespace ContactsAppAPI.Controllers
         [Route("update")]
         public IActionResult UpdateContact([FromBody] Contact contact)
         {
-            _contactService.Update(contact);
+            try
+            {
+                if (contact == null)
+                    return BadRequest();
+
+                _contactService.Create(contact);
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while updating the contact");
+            }
 
             return Ok();
         }

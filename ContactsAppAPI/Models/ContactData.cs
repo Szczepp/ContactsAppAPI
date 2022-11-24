@@ -2,14 +2,13 @@
 
 namespace ContactsAppAPI.Models
 {
-    public class Contact
+    public class ContactData
     {
-        public long Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public virtual Category Category { get; set; }
+        public long CategoryId { get; set; }
     }
 }

@@ -20,11 +20,14 @@ namespace ContactsAppAPI.Abstracts
         public void Create(T entity)
         {
             this._db.Set<T>().Add(entity);
+            _db.SaveChanges();
         }
 
         public void Delete(T entity)
         {
             this._db.Set<T>().Remove(entity);
+            _db.SaveChanges();
+
         }
 
         public IQueryable<T> GetAll()
@@ -40,6 +43,8 @@ namespace ContactsAppAPI.Abstracts
         public void Update(T entity)
         {
             this._db.Set<T>().Update(entity);
+            _db.SaveChanges();
+
         }
     }
 }
