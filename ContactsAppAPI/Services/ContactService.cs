@@ -16,33 +16,15 @@ namespace ContactsAppAPI.Services
     public class ContactService : IContactService
     {
         private readonly IContactRepository _contactRepo;
-        private readonly ICategoryRepository _categoryRepo;
 
-        public ContactService(IContactRepository contactRepo, ICategoryRepository categoryRepo)
+        public ContactService(IContactRepository contactRepo)
         {
             _contactRepo = contactRepo;
-            _categoryRepo = categoryRepo;
         }
 
         public void Create(Contact entity)
         {
-            var category = _categoryRepo.GetCategoryById(entity.Category.Id);
-            entity.Category = category;
             _contactRepo.CreateContact(entity);
-        }
-
-        public void CreateContact(ContactData data)
-        {
-            Contact contact = new Contact
-            {
-                Name = data.Name,
-                Email = data.Email,
-                Password = data.Password,
-                Phone = data.Phone,
-                DateOfBirth = data.DateOfBirth,
-                Category = _categoryRepo.GetCategoryById(data.CategoryId)
-            };
-            Create(contact);
         }
 
         public async void Delete(long entityId)
@@ -65,7 +47,7 @@ namespace ContactsAppAPI.Services
 
         public async Task<Contact> GetByIdAsync(long entityId)
         {
-            var contact = await _contactRepo.GetContactWithDetailsByIdAsync(entityId);
+            var contact = await _contactRepo.GetContactByIdAsync(entityId);
             return contact;
         }
 

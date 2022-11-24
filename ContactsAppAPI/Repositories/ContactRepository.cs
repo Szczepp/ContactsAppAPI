@@ -25,7 +25,7 @@ namespace ContactsAppAPI.Repositories
         public async Task<Contact> GetContactWithDetailsByIdAsync(long id)
         {
             return await GetByCondition(c => c.Id == id)
-                .Include(c => c.Category) 
+                .Include(c => c.Category) //yet to be implemented
                 .FirstOrDefaultAsync();
         }
         public async Task<IEnumerable<Contact>> GetAllContactsAsync()

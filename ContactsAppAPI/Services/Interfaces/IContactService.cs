@@ -1,11 +1,11 @@
 ﻿using ContactsAppAPI.Abstracts;
 using ContactsAppAPI.Models;
-using Microsoft.Net.Http.Headers;
+using ContactsAppAPI.Repositories.Interfaces;
 
 namespace ContactsAppAPI.Services.Interfaces
 {
     public interface IContactService : IServiceBase<Contact>
     {
-        public void CreateContact(ContactData data);
+
     }
 }

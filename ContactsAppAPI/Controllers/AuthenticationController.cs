@@ -32,7 +32,6 @@ namespace ContactsAppAPI.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var reguest = Request;
             var user = await _userManager.FindByNameAsync(model.Username);
             var checkPswrd = await _userManager.CheckPasswordAsync(user, model.Password);
             if (user != null && checkPswrd)

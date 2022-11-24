@@ -16,6 +16,5 @@ namespace ContactsAppAPI.Data
             base.OnModelCreating(builder);
         }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Category> Categories { get; set; }
     }
 }
